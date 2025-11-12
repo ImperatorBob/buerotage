@@ -57,11 +57,30 @@ def get_calculation(jahr, monat_nr, wochenstunden, krank, urlaub, gleitzeit):
     return result_summary
 
 # --- 
-# 2. Die GUI (JETZT OHNE SPALTEN)
+# 2. Die GUI
 # ---
 
-st.set_page_config(layout="centered") # Sorgt für bessere Darstellung
+st.set_page_config(layout="centered") 
 st.title("Bürotage-Rechner")
+
+# --- HIER IST DER NEUE INFO-BEREICH ---
+with st.expander("ℹ️ Info zur Berechnung (Hier klicken)"):
+    st.markdown("""
+    Die Berechnung erfolgt nach deinen Vorgaben:
+
+    **1. Basis Solltage (Ziel-Bürotage bei 100%):**
+    `(Wochenstunden / 40) * 8`
+
+    **2. Reduzierte Solltage (Aliquotierung):**
+    `Basis Solltage * (Werktage - Abzüge) / Werktage`
+
+    **Wobei:**
+    * **'Werktage'** alle Mo-Fr des Monats sind.
+    * **'Abzüge'** = Feiertage (auto) + Urlaub + Krank + Gleitzeit.
+    * Das Endergebnis wird kaufmännisch gerundet.
+    """)
+# --- ENDE DES INFO-BEREICHS ---
+
 
 # Monatsnamen und Mapping
 MONTH_NAMES = ["Januar", "Februar", "März", "April", "Mai", "Juni", 
@@ -72,8 +91,6 @@ MONTH_MAP = {name: i+1 for i, name in enumerate(MONTH_NAMES)}
 now = datetime.datetime.now()
 
 # --- EINGABEFELDER IN KORREKTER REIHENFOLGE ---
-# Die Spalten (col1, col2) sind jetzt entfernt.
-# Die Elemente erscheinen in der Reihenfolge, in der sie hier stehen.
 
 year_val = st.number_input(
     "Jahr:", 
@@ -93,8 +110,6 @@ hours_val = st.number_input(
     value=38.5, 
     step=0.5
 )
-
-# --- Die restlichen Felder ---
 
 sick_val = st.number_input(
     "Kranktage:", 
@@ -130,7 +145,7 @@ if st.button("Berechnen"):
         )
         
         # Ergebnis anzeigen
-        st.success(result_text) # Zeigt eine grüne Box
+        st.success(result_text) 
 
     except Exception as e:
         st.error(f"Fehler bei der Eingabe: {e}")
