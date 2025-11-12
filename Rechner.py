@@ -66,7 +66,7 @@ st.title("Bürotage-Rechner")
 # --- HIER IST DER NEUE INFO-BEREICH ---
 with st.expander("ℹ️ Info zur Berechnung (Hier klicken)"):
     st.markdown("""
-    Die Berechnung erfolgt nach deinen Vorgaben:
+    Die Berechnung erfolgt nach diesen Vorgaben:
 
     **1. Basis Solltage (Ziel-Bürotage bei 100%):**
     `(Wochenstunden / 40) * 8`
@@ -75,8 +75,8 @@ with st.expander("ℹ️ Info zur Berechnung (Hier klicken)"):
     `Basis Solltage * (Werktage - Abzüge) / Werktage`
 
     **Wobei:**
-    * **'Werktage'** alle Mo-Fr des Monats sind.
-    * **'Abzüge'** = Feiertage (auto) + Urlaub + Krank + Gleitzeit.
+    * **"Werktage"** = Mo-Fr.
+    * **"Abzüge"** = Feiertage (bundeseinheitliche werden automatisch geladen) + Urlaub + Krank + Gleitzeit. Regionale Feiertage bitte als Urlaub oder Gleitzeit erfassen.
     * Das Endergebnis wird kaufmännisch gerundet.
     """)
 # --- ENDE DES INFO-BEREICHS ---
@@ -149,3 +149,4 @@ if st.button("Berechnen"):
 
     except Exception as e:
         st.error(f"Fehler bei der Eingabe: {e}")
+
