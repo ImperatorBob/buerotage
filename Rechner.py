@@ -2,10 +2,9 @@ import streamlit as st
 import datetime
 import calendar
 import holidays
-# (Die 'tkinter' imports sind jetzt weg, da sie nicht mehr gebraucht werden)
 
 # --- 
-# 1. HIER IST DIE FEHLENDE FUNKTION (Lösung für den Fehler)
+# 1. Die Berechnungs-Logik (unverändert)
 # ---
 def get_calculation(jahr, monat_nr, wochenstunden, krank, urlaub, gleitzeit):
     """
@@ -58,10 +57,10 @@ def get_calculation(jahr, monat_nr, wochenstunden, krank, urlaub, gleitzeit):
     return result_summary
 
 # --- 
-# 2. HIER IST DIE GUI (Lösung für die Reihenfolge)
+# 2. Die GUI (JETZT OHNE SPALTEN)
 # ---
 
-st.set_page_config(layout="centered") # Sorgt für bessere Darstellung auf Desktop
+st.set_page_config(layout="centered") # Sorgt für bessere Darstellung
 st.title("Bürotage-Rechner")
 
 # Monatsnamen und Mapping
@@ -72,55 +71,54 @@ MONTH_MAP = {name: i+1 for i, name in enumerate(MONTH_NAMES)}
 # Aktuelles Datum holen
 now = datetime.datetime.now()
 
-# --- NEUE REIHENFOLGE DER EINGABEFELDER ---
-# Wir nutzen Spalten, damit es auf dem Handy gut aussieht
+# --- EINGABEFELDER IN KORREKTER REIHENFOLGE ---
+# Die Spalten (col1, col2) sind jetzt entfernt.
+# Die Elemente erscheinen in der Reihenfolge, in der sie hier stehen.
 
-col1, col2 = st.columns(2) # Spalten für schöneres Layout
+year_val = st.number_input(
+    "Jahr:", 
+    value=now.year, 
+    step=1, 
+    format="%d"
+)
 
-with col1:
-    year_val = st.number_input(
-        "Jahr:", 
-        value=now.year, 
-        step=1, 
-        format="%d"
-    )
-    
-    hours_val = st.number_input(
-        "Wochenstunden:", 
-        value=38.5, 
-        step=0.5
-    )
-    
-    sick_val = st.number_input(
-        "Kranktage:", 
-        value=0, 
-        step=1, 
-        min_value=0
-    )
+month_name = st.selectbox(
+    "Monat:", 
+    options=MONTH_NAMES, 
+    index=now.month - 1
+)
+
+hours_val = st.number_input(
+    "Wochenstunden:", 
+    value=38.5, 
+    step=0.5
+)
+
+# --- Die restlichen Felder ---
+
+sick_val = st.number_input(
+    "Kranktage:", 
+    value=0, 
+    step=1, 
+    min_value=0
+)
+
+vacation_val = st.number_input(
+    "Urlaubstage:", 
+    value=0, 
+    step=1, 
+    min_value=0
+)
+
+flex_val = st.number_input(
+    "Gleitzeittage:", 
+    value=0, 
+    step=1, 
+    min_value=0
+)
 
 
-with col2:
-    month_name = st.selectbox(
-        "Monat:", 
-        options=MONTH_NAMES, 
-        index=now.month - 1
-    )
-    
-    vacation_val = st.number_input(
-        "Urlaubstage:", 
-        value=0, 
-        step=1, 
-        min_value=0
-    )
-
-    flex_val = st.number_input(
-        "Gleitzeittage:", 
-        value=0, 
-        step=1, 
-        min_value=0
-    )
-
-# --- Button und Berechnung ---
+# --- Button und Berechnung (unverändert) ---
 if st.button("Berechnen"):
     try:
         month_val = MONTH_MAP[month_name]
