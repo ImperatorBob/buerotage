@@ -84,4 +84,5 @@ if st.button("Berechnen"):
         st.success(result_text) # Zeigt eine grüne Box
 
     except Exception as e:
+
         st.error(f"Fehler bei der Eingabe: {e}")
