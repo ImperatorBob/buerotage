@@ -63,7 +63,7 @@ def get_calculation(jahr, monat_nr, wochenstunden, krank, urlaub, gleitzeit):
 st.set_page_config(layout="centered") 
 st.title("Bürotage-Rechner")
 
-# --- ÄNDERUNG 1 & 2: Info-Text und Link angepasst ---
+# --- ÄNDERUNG 1: Dein angepasster Info-Text ---
 with st.expander("ℹ️ Info zur Berechnung (Hier klicken)"):
     st.markdown("""
     Die Berechnung erfolgt nach diesen Vorgaben:
@@ -76,8 +76,8 @@ with st.expander("ℹ️ Info zur Berechnung (Hier klicken)"):
 
     **Wobei:**
     * **"Werktage"** = Mo-Fr.
-    * **"Abzüge"** = Feiertage (bundeseinheitl. auto) + Urlaub + Krank + Gleitzeit. Regionale Feiertage bitte als Urlaub/Gleitzeit erfassen.
-    * **Was zählt auch als Bürotag?** Tage wie Reisetage, Kickoffs, Betriebsversammlungen oder "krank aus Büro" bitte als **Krank-** oder **Gleitzeittag** erfassen, da sie die Anwesenheitspflicht reduzieren.
+    * **"Abzüge"** = Feiertage (bundeseinheitliche werden automatisch erfasst) + Urlaub + Krank + Gleitzeit. Regionale Feiertage, Brauchtumstage, etc. bitte als Urlaub/Gleitzeit erfassen.
+    * **Was zählt auch als Bürotag?** Tage wie Reisetage, Kickoffs, Betriebsversammlungen oder "krank aus Büro" bitte als **Krank-** oder **Gleitzeittag** erfassen, da sie die Anwesenheitspflicht ebenfalls reduzieren.
     
     **Weitere Details:**
     * Das Endergebnis wird kaufmännisch gerundet.
@@ -153,16 +153,14 @@ if st.button("Berechnen"):
         # 1. Die Detail-Info in einer grünen Box (unverändert)
         st.success(info_text) 
         
-        # --- ÄNDERUNG 3: Grafisch aufgewertete Ergebnisanzeige ---
         st.markdown("---") # Trennlinie
         
-        # Eigene HTML/CSS "Kachel" für das Endergebnis
-        # Die Farben sind an das Streamlit-Standard-Dark-Theme angepasst
+        # --- ÄNDERUNG 2: Grafische Anzeige mit roter Schrift ---
         st.markdown(
             f"""
             <div style="background-color: #0E1117; border: 1px solid #262730; border-radius: 10px; padding: 20px; text-align: center; margin-top: 20px;">
                 <p style="font-size: 1.1rem; color: #FAFAFA; margin-bottom: 5px;">Dein Soll für {month_year_str}</p>
-                <p style="font-size: 2.8rem; font-weight: bold; color: #1F883D; margin: 0;">{final_days} Tage</p>
+                <p style="font-size: 2.8rem; font-weight: bold; color: #FF4B4B; margin: 0;">{final_days} Tage</p>
             </div>
             """,
             unsafe_allow_html=True
