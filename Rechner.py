@@ -2,6 +2,8 @@ import streamlit as st
 import datetime
 import calendar
 import holidays
+# NEUER IMPORT für den Scroll-Hack
+import streamlit.components.v1 as components
 
 # --- 
 # 1. Die Berechnungs-Logik (unverändert)
@@ -63,7 +65,7 @@ def get_calculation(jahr, monat_nr, wochenstunden, krank, urlaub, gleitzeit):
 st.set_page_config(layout="centered") 
 st.title("Bürotage-Rechner")
 
-# --- ÄNDERUNG 1: Dein angepasster Info-Text ---
+# --- Info-Bereich (unverändert) ---
 with st.expander("ℹ️ Info zur Berechnung (Hier klicken)"):
     st.markdown("""
     Die Berechnung erfolgt nach diesen Vorgaben:
@@ -95,20 +97,17 @@ MONTH_MAP = {name: i+1 for i, name in enumerate(MONTH_NAMES)}
 now = datetime.datetime.now()
 
 # --- EINGABEFELDER (unverändert) ---
-
 year_val = st.number_input(
     "Jahr:", 
     value=now.year, 
     step=1, 
     format="%d"
 )
-
 month_name = st.selectbox(
     "Monat:", 
     options=MONTH_NAMES, 
     index=now.month - 1
 )
-
 hours_val = st.number_input(
     "Wochenstunden:", 
     value=38.5, 
@@ -116,21 +115,18 @@ hours_val = st.number_input(
     min_value=0.0,
     max_value=40.0 
 )
-
 sick_val = st.number_input(
     "Kranktage:", 
     value=0, 
     step=1, 
     min_value=0
 )
-
 vacation_val = st.number_input(
     "Urlaubstage:", 
     value=0, 
     step=1, 
     min_value=0
 )
-
 flex_val = st.number_input(
     "Gleitzeittage:", 
     value=0, 
@@ -150,12 +146,12 @@ if st.button("Berechnen"):
             sick_val, vacation_val, flex_val
         )
         
-        # 1. Die Detail-Info in einer grünen Box (unverändert)
+        # 1. Die Detail-Info in einer grünen Box
         st.success(info_text) 
         
         st.markdown("---") # Trennlinie
         
-        # --- ÄNDERUNG 2: Grafische Anzeige mit roter Schrift ---
+        # 2. Grafische Anzeige
         st.markdown(
             f"""
             <div style="background-color: #0E1117; border: 1px solid #262730; border-radius: 10px; padding: 20px; text-align: center; margin-top: 20px;">
@@ -165,7 +161,21 @@ if st.button("Berechnen"):
             """,
             unsafe_allow_html=True
         )
-        # --- ENDE DER GRAFISCHEN ANZEIGE ---
+
+        # --- NEU: Auto-Scroll-Down ---
+        # Dieses HTML/JS-Snippet scrollt die Seite nach unten.
+        # Der Timeout (100ms) ist wichtig, damit die Seite Zeit zum
+        # Rendern der obigen Ergebnisse hat, BEVOR der Scroll-Befehl kommt.
+        scroll_js = """
+        <script>
+            setTimeout(function() {
+                window.scrollTo(0, document.body.scrollHeight);
+            }, 100);
+        </script>
+        """
+        # components.html führt das JS aus. height=0 macht es unsichtbar.
+        components.html(scroll_js, height=0)
+        # --- ENDE AUTO-SCROLL ---
 
     except Exception as e:
         st.error(f"Fehler bei der Eingabe: {e}")
