@@ -4,7 +4,7 @@ import calendar
 import holidays
 
 # --- 
-# 1. Die Berechnungs-Logik (Angepasst)
+# 1. Die Berechnungs-Logik (unverändert)
 # ---
 def get_calculation(jahr, monat_nr, wochenstunden, krank, urlaub, gleitzeit):
     """
@@ -47,16 +47,13 @@ def get_calculation(jahr, monat_nr, wochenstunden, krank, urlaub, gleitzeit):
 
     buero_tage_gerundet = int(buero_tage_real + 0.5) # Kaufmännisch runden
 
-    # --- ÄNDERUNG 3: Getrennte Rückgabe von Infos und Endergebnis ---
-    
-    # Text für die Info-Box
+    # Getrennte Rückgabe von Infos und Endergebnis
     result_info = (
         f"Info: {total_werktage} Werktage (Mo-Fr), "
         f"davon {feiertage_auf_werktag} Feiertage.\n"
         f"Basis-Soll (100%): {basis_solltage:.2f} Tage."
     )
     
-    # Rückgabe als "Tupel" (Info-Text, Endergebnis, Monats-String)
     return result_info, buero_tage_gerundet, f"{monat_nr}/{jahr}"
 
 # --- 
@@ -66,7 +63,7 @@ def get_calculation(jahr, monat_nr, wochenstunden, krank, urlaub, gleitzeit):
 st.set_page_config(layout="centered") 
 st.title("Bürotage-Rechner")
 
-# --- ÄNDERUNG 2: Info-Text angepasst ---
+# --- ÄNDERUNG 1 & 2: Info-Text und Link angepasst ---
 with st.expander("ℹ️ Info zur Berechnung (Hier klicken)"):
     st.markdown("""
     Die Berechnung erfolgt nach diesen Vorgaben:
@@ -80,8 +77,11 @@ with st.expander("ℹ️ Info zur Berechnung (Hier klicken)"):
     **Wobei:**
     * **"Werktage"** = Mo-Fr.
     * **"Abzüge"** = Feiertage (bundeseinheitl. auto) + Urlaub + Krank + Gleitzeit. Regionale Feiertage bitte als Urlaub/Gleitzeit erfassen.
-    * **Was zählt nicht als Bürotag?** Tage wie Reisetage, Kickoffs, Betriebsversammlungen oder "krank aus Büro" bitte als **Krank-** oder **Gleitzeittag** erfassen, da sie die Anwesenheitspflicht reduzieren.
+    * **Was zählt auch als Bürotag?** Tage wie Reisetage, Kickoffs, Betriebsversammlungen oder "krank aus Büro" bitte als **Krank-** oder **Gleitzeittag** erfassen, da sie die Anwesenheitspflicht reduzieren.
+    
+    **Weitere Details:**
     * Das Endergebnis wird kaufmännisch gerundet.
+    * Detaillierte Sonderfälle findest du im [internen FAQ](http://placeholder-link.intern/faq) (Nur per Intranet/VPN erreichbar).
     """)
 # --- ENDE DES INFO-BEREICHS ---
 
@@ -94,7 +94,7 @@ MONTH_MAP = {name: i+1 for i, name in enumerate(MONTH_NAMES)}
 # Aktuelles Datum holen
 now = datetime.datetime.now()
 
-# --- EINGABEFELDER ---
+# --- EINGABEFELDER (unverändert) ---
 
 year_val = st.number_input(
     "Jahr:", 
@@ -109,13 +109,12 @@ month_name = st.selectbox(
     index=now.month - 1
 )
 
-# --- ÄNDERUNG 1: Maximale Wochenstunden auf 40 begrenzt ---
 hours_val = st.number_input(
     "Wochenstunden:", 
     value=38.5, 
     step=0.5,
-    min_value=0.0,  # Min-Wert ist auch eine gute Praxis
-    max_value=40.0  # Hier ist die Begrenzung
+    min_value=0.0,
+    max_value=40.0 
 )
 
 sick_val = st.number_input(
@@ -146,21 +145,29 @@ if st.button("Berechnen"):
         month_val = MONTH_MAP[month_name]
         
         # Logik-Funktion aufrufen
-        # Wir "entpacken" die drei Rückgabewerte:
         info_text, final_days, month_year_str = get_calculation(
             year_val, month_val, hours_val, 
             sick_val, vacation_val, flex_val
         )
         
-        # --- ÄNDERUNG 3: Angepasste Ergebnisanzeige ---
-        
-        # 1. Die Detail-Info in einer grünen Box
+        # 1. Die Detail-Info in einer grünen Box (unverändert)
         st.success(info_text) 
         
-        # 2. Das Endergebnis STARK hervorheben
-        st.markdown(f"--- \n ### Dein Soll für {month_year_str}")
-        st.metric(label="Bürotage", value=f"{final_days} Tage")
-        # --- Ende der Ergebnisanzeige ---
+        # --- ÄNDERUNG 3: Grafisch aufgewertete Ergebnisanzeige ---
+        st.markdown("---") # Trennlinie
+        
+        # Eigene HTML/CSS "Kachel" für das Endergebnis
+        # Die Farben sind an das Streamlit-Standard-Dark-Theme angepasst
+        st.markdown(
+            f"""
+            <div style="background-color: #0E1117; border: 1px solid #262730; border-radius: 10px; padding: 20px; text-align: center; margin-top: 20px;">
+                <p style="font-size: 1.1rem; color: #FAFAFA; margin-bottom: 5px;">Dein Soll für {month_year_str}</p>
+                <p style="font-size: 2.8rem; font-weight: bold; color: #1F883D; margin: 0;">{final_days} Tage</p>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+        # --- ENDE DER GRAFISCHEN ANZEIGE ---
 
     except Exception as e:
         st.error(f"Fehler bei der Eingabe: {e}")
