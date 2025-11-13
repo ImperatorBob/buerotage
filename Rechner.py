@@ -2,7 +2,6 @@ import streamlit as st
 import datetime
 import calendar
 import holidays
-# NEUER IMPORT für den Scroll-Hack
 import streamlit.components.v1 as components
 
 # --- 
@@ -146,10 +145,9 @@ if st.button("Berechnen"):
             sick_val, vacation_val, flex_val
         )
         
-        # 1. Die Detail-Info in einer grünen Box
+        # 1. Die Detail-Info
         st.success(info_text) 
-        
-        st.markdown("---") # Trennlinie
+        st.markdown("---")
         
         # 2. Grafische Anzeige
         st.markdown(
@@ -162,18 +160,16 @@ if st.button("Berechnen"):
             unsafe_allow_html=True
         )
 
-        # --- NEU: Auto-Scroll-Down ---
-        # Dieses HTML/JS-Snippet scrollt die Seite nach unten.
-        # Der Timeout (100ms) ist wichtig, damit die Seite Zeit zum
-        # Rendern der obigen Ergebnisse hat, BEVOR der Scroll-Befehl kommt.
+        # --- HIER IST DIE KORREKTUR FÜR DEN AUTO-SCROLL ---
         scroll_js = """
         <script>
             setTimeout(function() {
-                window.scrollTo(0, document.body.scrollHeight);
-            }, 100);
+                // Sagt dem Eltern-Fenster (der Hauptseite), zu scrollen
+                window.parent.scrollTo(0, window.parent.document.body.scrollHeight);
+            }, 150); 
         </script>
         """
-        # components.html führt das JS aus. height=0 macht es unsichtbar.
+        # Führt das korrigierte JS aus
         components.html(scroll_js, height=0)
         # --- ENDE AUTO-SCROLL ---
 
