@@ -82,7 +82,7 @@ with st.expander("ℹ️ Info zur Berechnung (Hier klicken)"):
     
     **Weitere Details:**
     * Das Endergebnis wird kaufmännisch gerundet.
-    * Detaillierte Sonderfälle findest du im [internen FAQ](http://placeholder-link.intern/faq) (Nur per Intranet/VPN erreichbar).
+    * Detaillierte Sonderfälle findest du im [internen FAQ](https://vodafone.sharepoint.com/sites/myHRGermany/SitePages/Hybrid Working.aspx) (Nur per Intranet/VPN erreichbar).
     """)
 # --- ENDE DES INFO-BEREICHS ---
 
@@ -175,3 +175,4 @@ if st.button("Berechnen"):
 
     except Exception as e:
         st.error(f"Fehler bei der Eingabe: {e}")
+
