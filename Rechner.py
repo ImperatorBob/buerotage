@@ -81,8 +81,8 @@ with st.expander("ℹ️ Info zur Berechnung (Hier klicken)"):
     * **Was zählt auch als Bürotag?** Tage wie Reisetage, Kickoffs, Betriebsversammlungen oder "krank aus Büro" bitte als **Krank-** oder **Gleitzeittag** erfassen, da sie die Anwesenheitspflicht ebenfalls reduzieren.
     
     **Weitere Details:**
-    * Das Endergebnis wird kaufmännisch gerundet.
-    * Detaillierte Sonderfälle findest du im print('<a href="https://vodafone.sharepoint.com/sites/myHRGermany/SitePages/Hybrid Working.aspx">internen FAQ</a>') (Nur per Intranet/VPN erreichbar).
+    * Das Endergebnis wird kaufmännisch gerundet.    
+    * Detaillierte Sonderfälle findest du im [internen FAQ](https://vodafone.sharepoint.com/sites/myHRGermany/SitePages/Hybrid%20Working.aspx) (Nur per Intranet/VPN erreichbar).
     """)
 # --- ENDE DES INFO-BEREICHS ---
 
@@ -175,5 +175,6 @@ if st.button("Berechnen"):
 
     except Exception as e:
         st.error(f"Fehler bei der Eingabe: {e}")
+
 
 
