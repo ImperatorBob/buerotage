@@ -7,7 +7,7 @@ import streamlit.components.v1 as components
 # --- 
 # 1. Die Berechnungs-Logik (unverändert)
 # ---
-def get_calculation(jahr, monat_nr, wochenstunden, krank, urlaub, gleitzeit):
+def get_calculation(jahr, monat_nr, wochenstunden, krank, urlaub, gleitzeit, samstage=0):
     """
     Diese Funktion enthält die reine Berechnungslogik.
     """
@@ -48,12 +48,18 @@ def get_calculation(jahr, monat_nr, wochenstunden, krank, urlaub, gleitzeit):
 
     buero_tage_gerundet = int(buero_tage_real + 0.5) # Kaufmännisch runden
 
+    # Jeder gearbeitete Samstag zählt als Bürotag und reduziert das Soll um 1 (nicht unter 0)
+    buero_tage_gerundet = max(buero_tage_gerundet - samstage, 0)
+
     # Getrennte Rückgabe von Infos und Endergebnis
     result_info = (
         f"Info: {total_werktage} Werktage (Mo-Fr), "
         f"davon {feiertage_auf_werktag} Feiertage.\n"
         f"Basis-Soll (100%): {basis_solltage:.2f} Tage."
     )
+    if samstage > 0:
+        result_info += f"\nAbzüglich {samstage} gearbeitete(r) Samstag(e)."
+
     
     return result_info, buero_tage_gerundet, f"{monat_nr}/{jahr}"
 
@@ -80,8 +86,13 @@ with st.expander("ℹ️ Info zur Berechnung (Hier klicken)"):
     * **"Abzüge"** = Feiertage (bundeseinheitliche werden automatisch erfasst) + Urlaub + Krank + Gleitzeit. Regionale Feiertage, Brauchtumstage, etc. bitte als Urlaub/Gleitzeit erfassen.
     * **Was zählt auch als Bürotag?** Tage wie Reisetage, Kickoffs, Betriebsversammlungen oder "krank aus Büro" bitte als **Krank-** oder **Gleitzeittag** erfassen, da sie die Anwesenheitspflicht ebenfalls reduzieren.
     
+    **3. Gearbeitete Samstage:**
+    `Endergebnis = gerundete reduzierte Solltage - Samstage` (mindestens 0)
+
+    * Ein gearbeiteter Samstag zählt immer als Bürotag, auch wenn er von zuhause gearbeitet wurde. Jeder eingetragene Samstag verringert die zu arbeitenden Bürotage daher um 1 Tag.
+
     **Weitere Details:**
-    * Das Endergebnis wird kaufmännisch gerundet.    
+    * Das Endergebnis wird kaufmännisch gerundet (vor Abzug der Samstage).    
     * Detaillierte Sonderfälle findest du im [internen FAQ](https://vodafone.sharepoint.com/sites/myHRGermany/SitePages/Hybrid%20Working.aspx) (Nur per Intranet/VPN erreichbar).
     """)
 # --- ENDE DES INFO-BEREICHS ---
@@ -132,6 +143,12 @@ flex_val = st.number_input(
     step=1, 
     min_value=0
 )
+saturday_val = st.number_input(
+    "Gearbeitete Samstage:", 
+    value=0, 
+    step=1, 
+    min_value=0
+)
 
 
 # --- Button und Berechnung ---
@@ -142,7 +159,7 @@ if st.button("Berechnen"):
         # Logik-Funktion aufrufen
         info_text, final_days, month_year_str = get_calculation(
             year_val, month_val, hours_val, 
-            sick_val, vacation_val, flex_val
+            sick_val, vacation_val, flex_val, saturday_val
         )
         
         # 1. Die Detail-Info
